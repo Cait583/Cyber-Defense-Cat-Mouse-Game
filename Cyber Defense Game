@@ -1,0 +1,166 @@
+# Cyber Defense Cat & Mouse Game
+# This game simulates defending a company network from an attacker
+# through multiple stages. The player (You) makes decisions to protect the system.
+
+def intro():
+    """
+    This function prints the introduction to the game.
+    It explains the player's role and sets the scene.
+    """
+    print("🛡️ Welcome to the Cyber Defense Cat & Mouse Game!")
+    print("You are the security analyst defending your company's network from an attacker.")
+    print("Make smart choices to stop the attacker before they breach your system!\n")
+
+def stage1():
+    """
+    Stage 1: Phishing Email scenario.
+    The player is presented with a phishing email report.
+    The player chooses how to respond, and the function returns
+    True if successfully defended, False if partially defended,
+    or None if failed (game over).
+    """
+    print("Stage 1: Phishing Email Reported")
+    print("An employee reports a suspicious email asking to reset passwords urgently.")
+    
+    # Prompt the player to choose an action by typing a, b, or c
+    choice = input("Do you:\n(a) Send a company-wide alert to ignore the email\n"
+                   "(b) Analyze the email headers and attachments\n"
+                   "(c) Ignore the report\nChoose (a/b/c): ")
+    
+    # Check player's choice and respond accordingly
+    if choice.lower() == 'b':
+        # Best choice: investigating email to find phishing origin
+        print("Good call! You discover the email is from a phishing domain. You block the sender’s IP.\n")
+        return True  # Successfully defended this stage
+    elif choice.lower() == 'a':
+        # Partial defense: alert sent but some users still fall for it
+        print("Alert sent, but some employees clicked the malicious link. The attacker gains initial access.\n")
+        return False  # Partially defended but attacker got in
+    else:
+        # Failed: ignoring leads to compromise
+        print("Ignoring the report allowed the attacker to breach several accounts. Game Over.\n")
+        return None  # Game over
+
+def stage2(phishing_success):
+    """
+    Stage 2: Brute Force Login Attempts scenario.
+    The system logs show suspicious failed login attempts.
+    Player chooses how to respond.
+    Returns True if attacker blocked, False if partially blocked,
+    None if attacker succeeds (game over).
+    The argument phishing_success indicates if attacker got in Stage 1.
+    """
+    print("Stage 2: Brute Force Login Attempts Detected")
+    print("Your system logs show multiple failed login attempts from an unknown IP.")
+    
+    choice = input("Do you:\n(a) Enable account lockout after failed attempts\n"
+                   "(b) Ignore; it’s probably a user mistake\n"
+                   "(c) Block the IP immediately\nChoose (a/b/c): ")
+    
+    if choice.lower() == 'c':
+        # Best choice: blocking IP immediately stops attacker
+        print("IP blocked successfully. Attacker cannot brute force further.\n")
+        return True
+    elif choice.lower() == 'a':
+        # Partial defense: lockout slows attacker but not perfect
+        print("Account lockout enabled, but attacker still tries different IPs.\n")
+        return False
+    else:
+        # Failed: ignoring lets attacker in
+        print("No action taken. Attacker eventually guesses a password and logs in. Game Over.\n")
+        return None
+
+def stage3(previous_stage_success):
+    """
+    Stage 3: Malware Detection scenario.
+    Anti-virus alerts to suspicious software on a workstation.
+    Player must choose how to respond.
+    Returns True for success, False for partial, None for failure.
+    previous_stage_success indicates outcome of previous stage.
+    """
+    print("Stage 3: Malware Detected on a Workstation")
+    print("Anti-virus alerts you to suspicious software running on an employee's computer.")
+    
+    choice = input("Do you:\n(a) Isolate the infected machine from the network\n"
+                   "(b) Run a full system scan remotely\n"
+                   "(c) Ignore; it might be a false alarm\nChoose (a/b/c): ")
+    
+    if choice.lower() == 'a':
+        # Best choice: isolate machine to contain malware
+        print("Machine isolated. Malware containment successful.\n")
+        return True
+    elif choice.lower() == 'b':
+        # Partial defense: scanning but malware spreads meanwhile
+        print("Scan started, but malware spread quickly before completion.\n")
+        return False
+    else:
+        # Failed: ignoring alert leads to malware spread and game over
+        print("Ignoring alert allowed malware to spread. Game Over.\n")
+        return None
+
+def stage4(previous_stage_success):
+    """
+    Stage 4: Suspicious Network Traffic scenario.
+    Unusual outbound traffic detected from server.
+    Player decides whether to isolate server or monitor.
+    Returns True on success, False partial, None failure.
+    """
+    print("Stage 4: Suspicious Network Traffic")
+    print("You notice unusual outbound traffic from your server late at night.")
+    
+    choice = input("Do you:\n(a) Immediately isolate the server\n"
+                   "(b) Monitor traffic to gather more info\n"
+                   "(c) Ignore; it’s probably routine backup\nChoose (a/b/c): ")
+    
+    if choice.lower() == 'a':
+        # Best choice: isolating server stops data exfiltration
+        print("Server isolated. Data exfiltration stopped. You defended successfully!\n")
+        return True
+    elif choice.lower() == 'b':
+        # Partial defense: monitoring delays action, data stolen
+        print("Monitoring delayed response; attacker exfiltrated data. Game Over.\n")
+        return False
+    else:
+        # Failed: ignoring suspicious traffic lets attacker succeed
+        print("Ignoring suspicious traffic allowed attacker full access. Game Over.\n")
+        return None
+
+def main():
+    """
+    Main function to run the game.
+    Calls each stage in sequence and checks the outcome.
+    Ends game early if player fails any stage.
+    At the end, gives final message based on performance.
+    """
+    intro()  # Show game introduction
+    
+    result1 = stage1()  # Play Stage 1
+    if result1 is None:  # Player failed this stage
+        print("Game Over.")
+        return  # End game
+    
+    result2 = stage2(result1)  # Play Stage 2 with knowledge of Stage 1 outcome
+    if result2 is None:
+        print("Game Over.")
+        return
+    
+    result3 = stage3(result2)
+    if result3 is None:
+        print("Game Over.")
+        return
+    
+    result4 = stage4(result3)
+    if result4 is None:
+        print("Game Over.")
+        return
+
+    # If all stages succeeded
+    if all([result1, result2, result3, result4]):
+        print("🎉 Congratulations! You successfully defended your system against the attacker!")
+    else:
+        # Partial success but survived overall
+        print("Some defenses failed, but you survived. Keep learning and improving your security skills!")
+
+# Standard Python convention to run main only if this script is run directly
+if __name__ == "__main__":
+    main()
