@@ -34,5 +34,4 @@ Each decision you make influences the outcome — will you successfully defend y
 1. **Clone or download this repository:**
 
    ```bash
-   git clone https://github.com/your-username/cyber-defense-cat-mouse.git
-   cd cyber-defense-cat-mouse
+   git clone https://github.com/your-username/Cyber Defense Game
